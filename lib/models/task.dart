@@ -1,14 +1,26 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:equatable/equatable.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../utilities/utility_functions.dart';
 
+part 'task.g.dart';
+
+@HiveType(typeId: 1)
 class Task extends Equatable {
+  @HiveField(0)
   String? id;
+
+  @HiveField(1)
   String title;
+
+  @HiveField(2)
   bool? isDone;
+
+  @HiveField(3)
   bool? isDeleted;
+
   Task({
     this.id,
     required this.title,

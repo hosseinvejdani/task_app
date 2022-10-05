@@ -11,16 +11,24 @@ class TaskInitial extends TaskState {
   const TaskInitial();
 }
 
-class TaskLoading extends TaskState {
-  const TaskLoading();
+class TasksLoading extends TaskState {
+  const TasksLoading();
 }
 
-class TaskLoaded extends TaskState {
+class TasksLoaded extends TaskState {
   final List<Task> tasks;
-  const TaskLoaded(this.tasks);
+  const TasksLoaded(this.tasks);
 
   @override
   List<Object> get props => [tasks];
+}
+
+class TaskLoaded extends TaskState {
+  final Task task;
+  const TaskLoaded(this.task);
+
+  @override
+  List<Object> get props => [task];
 }
 
 class TaskError extends TaskState {

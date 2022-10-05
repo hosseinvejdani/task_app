@@ -65,7 +65,7 @@ class AppRepository {
     }
   }
 
-  Future<List<Task>?> getTasks() async {
+  Future<List<Task>> getTasks() async {
     Box box;
     try {
       box = Hive.box(_tasksBoxName);
@@ -73,10 +73,11 @@ class AppRepository {
       box = await Hive.openBox(_tasksBoxName);
     }
 
+    List<Task> tasks = <Task>[];
+
     if (box.isNotEmpty) {
-      return box.values.cast<Task>().toList();
-    } else {
-      throw Exception('No task found!');
+      tasks.addAll(box.values.cast<Task>());
     }
+    return tasks;
   }
 }
