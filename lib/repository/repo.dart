@@ -78,6 +78,7 @@ class AppRepository {
     if (box.isNotEmpty) {
       tasks.addAll(box.values.cast<Task>());
     }
+    await Future.delayed(const Duration(milliseconds: 400));
     return tasks;
   }
 }
