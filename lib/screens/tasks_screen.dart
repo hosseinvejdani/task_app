@@ -10,6 +10,7 @@ class TasksScreen extends StatelessWidget {
   final titleController = TextEditingController();
 
   void _addTask(BuildContext context) {
+    titleController.clear();
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -66,29 +67,21 @@ class TasksScreen extends StatelessWidget {
           onPressed: () => _addTask(context),
           child: const Icon(Icons.add),
         ),
-        appBar: AppBar(),
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Task App'),
+        ),
         body: Column(children: [
           Container(margin: const EdgeInsets.all(12), child: const Text('Tasks:')),
           Expanded(
             child: BlocBuilder<TaskCubit, TaskState>(
               builder: (context, state) {
                 if (state is TaskInitial) {
-                  return const Center(child: Text('TaskInitial ... '));
+                  return taskInit();
                 } else if (state is TasksLoading) {
-                  return const Center(child: Text('TaskLoading ... '));
+                  return taskLoading();
                 } else if (state is TasksLoaded) {
-                  return ListView.builder(
-                      itemCount: state.tasks.length,
-                      itemBuilder: ((context, index) {
-                        var task = state.tasks[index];
-                        return ListTile(
-                          title: Text(task.title),
-                          trailing: Checkbox(
-                            onChanged: (value) => {},
-                            value: task.isDone,
-                          ),
-                        );
-                      }));
+                  return tasksList(state);
                 } else {
                   // state is TaskError
                   return const Center(child: Text('TaskError ... '));
@@ -100,4 +93,33 @@ class TasksScreen extends StatelessWidget {
       ),
     );
   }
+
+  ListView tasksList(TasksLoaded state) {
+    return ListView.builder(
+        itemCount: state.tasks.length,
+        itemBuilder: ((context, index) {
+          var task = state.tasks[index];
+          return ListTile(
+            title: Text(task.title),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                    onPressed: () => context.read<TaskCubit>().deleteTask(task.id!), icon: const Icon(Icons.delete_rounded)),
+                const SizedBox(width: 15),
+                Checkbox(
+                  onChanged: (value) => {
+                    context.read<TaskCubit>().updateTask(task.id!, task.copyWith(isDone: value)),
+                  },
+                  value: task.isDone,
+                ),
+              ],
+            ),
+          );
+        }));
+  }
+
+  Center taskLoading() => const Center(child: Text('TaskLoading ... '));
+
+  Center taskInit() => const Center(child: Text('TaskInitial ... '));
 }
